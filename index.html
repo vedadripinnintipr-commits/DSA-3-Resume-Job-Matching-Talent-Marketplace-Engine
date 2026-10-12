@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume–Job Matching & Talent-Marketplace Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside class="rail">
+  <h1>Resume–Job Matching &amp; Talent-Marketplace Engine</h1>
+  <nav id="nav" aria-label="Engine stages">
+    <button data-t="s1" class="on"><b>1</b>Resume input</button>
+    <button data-t="s2"><b>2</b>Skill normalization</button>
+    <button data-t="s3"><b>3</b>Job matching</button>
+    <button data-t="s4"><b>4</b>Assignment</button>
+    <button data-t="s5"><b>5</b>Team coverage</button>
+    <button data-t="about" class="plain">About the project</button>
+  </nav>
+</aside>
+
+<main>
+  <section id="s1" class="stage on">
+    <h2>Add candidates and jobs</h2>
+    <p class="lead">Enter skills exactly as people write them ("JS", "ReactJS", "ML"). The engine cleans them up in the next stage. Sample data is already loaded.</p>
+    <div class="two">
+      <form id="fc" class="card">
+        <h3>New candidate</h3>
+        <label>Name<input name="name" required></label>
+        <label>Skills, or paste résumé text<textarea name="skills" rows="3" required placeholder="JS, ReactJS, Git  — or a paragraph from a résumé"></textarea></label>
+        <div class="row"><label>Years of experience<input name="exp" type="number" min="0" max="40" value="2"></label>
+        <label>Education<select name="edu"><option value="1">Diploma</option><option value="2" selected>Bachelors</option><option value="3">Masters</option><option value="4">PhD</option></select></label></div>
+        <button class="btn">Add candidate</button>
+      </form>
+      <form id="fj" class="card">
+        <h3>New job</h3>
+        <label>Job title<input name="title" required></label>
+        <label>Required skills (comma separated)<textarea name="req" rows="3" required placeholder="Python, SQL, Docker"></textarea></label>
+        <div class="row"><label>Minimum experience (years)<input name="exp" type="number" min="0" max="40" value="2"></label>
+        <label>Minimum education<select name="edu"><option value="1">Diploma</option><option value="2" selected>Bachelors</option><option value="3">Masters</option><option value="4">PhD</option></select></label></div>
+        <button class="btn">Add job</button>
+      </form>
+    </div>
+    <div id="lists"></div>
+    <button id="reset" class="btn ghost">Reset to sample data</button>
+  </section>
+
+  <section id="s2" class="stage">
+    <h2>Skill normalization</h2>
+    <p class="lead">A hash map turns synonyms into one standard skill. If a word is not in the map, Levenshtein string similarity (80% or higher) catches typos like "Typescrpt".</p>
+    <div class="card"><h3>Try a skill name</h3>
+      <div class="row"><input id="probe" placeholder="e.g. reactjs, Typescrpt, pandas"><div id="probeOut" class="probe"></div></div></div>
+    <div id="normList"></div>
+    <details class="card"><summary>Synonym dictionary</summary><div id="dict"></div></details>
+  </section>
+
+  <section id="s3" class="stage">
+    <h2>Rank candidates for a job</h2>
+    <p class="lead">Each candidate gets a compatibility score from 0 to 100. A min-heap keeps only the top K, so ranking stays fast on large pools.</p>
+    <div class="card controls">
+      <label>Job<select id="jobSel"></select></label>
+      <label>Show top<input id="k" type="number" min="1" value="5"></label>
+      <label>Skills <output id="ows">60</output>%<input id="ws" type="range" min="0" max="100" value="60"></label>
+      <label>Experience <output id="owe">25</output>%<input id="we" type="range" min="0" max="100" value="25"></label>
+      <label>Education <output id="owd">15</output>%<input id="wd" type="range" min="0" max="100" value="15"></label>
+    </div>
+    <div id="ranked"></div>
+  </section>
+
+  <section id="s4" class="stage">
+    <h2>Assign candidates to roles</h2>
+    <p class="lead">Each role has one opening and each candidate can take one role. The Hungarian algorithm on the candidate–job bipartite graph finds the assignment with the highest total score.</p>
+    <div id="assign"></div>
+  </section>
+
+  <section id="s5" class="stage">
+    <h2>Minimum team skill coverage</h2>
+    <p class="lead">Which is the smallest group of candidates whose skills cover everything the open roles need? Greedy set cover gives a quick answer; an exhaustive search confirms the true minimum on small pools.</p>
+    <div id="cover"></div>
+  </section>
+
+  <section id="about" class="stage">
+    <h2>About the project</h2>
+    <p class="lead">The engine automates recruitment by matching résumés to job postings, normalizing skill vocabularies, scoring compatibility, assigning candidates to roles and reporting the minimum skill set for a team. It reduces manual screening and supports faster, data-driven hiring.</p>
+    <table class="card ds">
+      <tr><th>Step</th><th>Data structure / algorithm</th></tr>
+      <tr><td>Skill normalization</td><td>Hash map (synonym → standard skill), Levenshtein string similarity</td></tr>
+      <tr><td>Ranking</td><td>Min-heap top-K selection, O(n log K)</td></tr>
+      <tr><td>Assignment</td><td>Bipartite graph, Hungarian algorithm, O(n³)</td></tr>
+      <tr><td>Team coverage</td><td>Set cover: greedy approximation and exact subset search</td></tr>
+    </table>
+    <p class="lead">Guide: Mrs. Ch. Anitha, Asst. Professor, CS&amp;IT · Submitted by G. Teja (2520090162) and P. Vedadri Naidu (2520090060).</p>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
